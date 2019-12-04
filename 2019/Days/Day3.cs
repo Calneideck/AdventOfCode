@@ -1,70 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace AdventOfCode
 {
     class Day3 : Day
     {
-        struct V2
-        {
-            public int x, y;
-
-            public V2(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-            }
-        }
-
         public override int Part1()
         {
             string[] lines = File.ReadAllLines("Input/3.txt");
             string[] wire1 = lines[0].Split(',');
             string[] wire2 = lines[1].Split(',');
 
-            HashSet<V2> points = new HashSet<V2>();
+            var path1 = GetWirePath(wire1);
+            var path2 = GetWirePath(wire2);
 
-            var p = new V2(0, 0);
-
-            int shortestDist = int.MaxValue;
-
-            foreach (string instruction in wire1)
-            {
-                V2 dir = GetDir(instruction.Substring(0, 1));
-                int amount = int.Parse(instruction.Substring(1));
-
-                for (int i = 0; i < amount; i++)
-                {
-                    p = new V2(p.x + dir.x, p.y + dir.y);
-                    if (!points.Contains(p))
-                        points.Add(p);
-                }
-            }
-
-            // Reset for wire 2
-            p = new V2(0, 0);
-
-            foreach (string instruction in wire2)
-            {
-                V2 dir = GetDir(instruction.Substring(0, 1));
-                int amount = int.Parse(instruction.Substring(1));
-
-                for (int i = 0; i < amount; i++)
-                {
-                    p = new V2(p.x + dir.x, p.y + dir.y);
-                    if ((p.x != 0 || p.y != 0) && points.Contains(p))
-                    {
-                        // Intersection
-                        int dist = Math.Abs(p.x) + Math.Abs(p.y);
-                        if (dist < shortestDist)
-                            shortestDist = dist;
-                    }
-                }
-            }
-
-
-            return shortestDist;
+            var intersect = path1.Keys.Intersect(path2.Keys);
+            return intersect.Min(i => Math.Abs(i.x) + Math.Abs(i.y));
         }
 
         public override int Part2()
@@ -73,63 +26,47 @@ namespace AdventOfCode
             string[] wire1 = lines[0].Split(',');
             string[] wire2 = lines[1].Split(',');
 
-            Dictionary<V2, int> points = new Dictionary<V2, int>();
+            var path1 = GetWirePath(wire1);
+            var path2 = GetWirePath(wire2);
 
-            V2 p = new V2(0, 0);
-            int steps = 0;
-            int shortestDist = int.MaxValue;
-
-            foreach (string instruction in wire1)
-            {
-                V2 dir = GetDir(instruction.Substring(0, 1));
-                int amount = int.Parse(instruction.Substring(1));
-
-                for (int i = 0; i < amount; i++)
-                {
-                    p = new V2(p.x + dir.x, p.y + dir.y);
-                    ++steps;
-
-                    if (!points.ContainsKey(p))
-                        points.Add(p, steps);
-                }
-            }
-
-            // Reset for wire 2
-            p = new V2(0, 0);
-            steps = 0;
-
-            foreach (string instruction in wire2)
-            {
-                V2 dir = GetDir(instruction.Substring(0, 1));
-                int amount = int.Parse(instruction.Substring(1));
-
-                for (int i = 0; i < amount; i++)
-                {
-                    p = new V2(p.x + dir.x, p.y + dir.y);
-                    ++steps;
-
-                    if ((p.x != 0 || p.y != 0) && points.ContainsKey(p))
-                    {
-                        // Intersection
-                        if (steps + points[p] < shortestDist)
-                            shortestDist = steps + points[p];
-                    }
-                }
-            }
-
-            return shortestDist;
+            var intersect = path1.Keys.Intersect(path2.Keys).Where(x => x.x != 0 && x.y != 0);
+            return intersect.Min(p => path1[p] + path2[p]);
         }
 
-        V2 GetDir(string direction)
+        (int x, int y) GetDir(string direction)
         {
             if (direction == "U")
-                return new V2(0, 1);
+                return (0, 1);
             else if (direction == "L")
-                return new V2(-1, 0);
+                return (-1, 0);
             else if (direction == "R")
-                return new V2(1, 0);
+                return (1, 0);
             else
-                return new V2(0, -1);
+                return (0, -1);
+        }
+
+        Dictionary<(int x, int y), int> GetWirePath(string[] wire)
+        {
+            Dictionary<(int, int), int> path = new Dictionary<(int, int), int>();
+            (int x, int y) p = (0, 0);
+
+            int steps = 0;
+            foreach (string instruction in wire)
+            {
+                var dir = GetDir(instruction.Substring(0, 1));
+                int amount = int.Parse(instruction.Substring(1));
+
+                for (int i = 0; i < amount; i++)
+                {
+                    p = (p.x + dir.x, p.y + dir.y);
+                    ++steps;
+
+                    if (!path.ContainsKey(p))
+                        path.Add(p, steps);
+                }
+            }
+
+            return path;
         }
     }
 }
