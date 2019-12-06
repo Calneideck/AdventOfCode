@@ -8,15 +8,17 @@ namespace AdventOfCode
     {
         enum Mode { Position, Immediate };
 
+        private int[] codes;
+
         public override int Part1()
         {
-            int[] codes = File.ReadAllText("Input/5.txt").Split(',').Select(s => int.Parse(s)).ToArray();
+            codes = File.ReadAllText("Input/5.txt").Split(',').Select(s => int.Parse(s)).ToArray();
             return GetCodeResult(codes, 1);
         }
 
         public override int Part2()
         {
-            int[] codes = File.ReadAllText("Input/5.txt").Split(',').Select(s => int.Parse(s)).ToArray();
+            codes = File.ReadAllText("Input/5.txt").Split(',').Select(s => int.Parse(s)).ToArray();
             return GetCodeResult(codes, 5);
         }
 
@@ -33,31 +35,29 @@ namespace AdventOfCode
                 Mode mode1 = (Mode)PlaceValue(instruction, 2);
                 Mode mode2 = (Mode)PlaceValue(instruction, 3);
 
-                int num1, num2;
-                
+                int num1 = Num(i + 1, mode1);
+                int num2 = Num(i + 2, mode2);
+                int num3 = Num(i + 3, Mode.Immediate);
+
                 switch (opcode)
                 {
                     case 1:
-                        num1 = Num(codes, i, 1, mode1);
-                        num2 = Num(codes, i, 2, mode2);
-                        codes = Add(codes, num1, num2, codes[i + 3]);
+                        codes[num3] = num1 + num2;
                         length = 4;
                         break;
 
                     case 2:
-                        num1 = Num(codes, i, 1, mode1);
-                        num2 = Num(codes, i, 2, mode2);
-                        codes = Multiply(codes, num1, num2, codes[i + 3]);
+                        codes[codes[i + 3]] = num1 * num2;
                         length = 4;
                         break;
 
                     case 3:
-                        codes = Write(codes, input, codes[i + 1]);
+                        Write(input, codes[i + 1]);
                         length = 2;
                         break;
 
                     case 4:
-                        int output = Num(codes, i, 1, mode1);
+                        int output = num1;
                         if (output != 0 && codes[i + 2] != 99)
                             throw new Exception("Error! Output: " + output + ", Code: " + i);
                         else
@@ -67,9 +67,9 @@ namespace AdventOfCode
                         break;
 
                     case 5:
-                        if (Num(codes, i, 1, mode1) != 0)
+                        if (num1 != 0)
                         {
-                            i = Num(codes, i, 2, mode2);
+                            i = num2;
                             length = 0;
                         }
                         else
@@ -77,9 +77,9 @@ namespace AdventOfCode
                         break;
 
                     case 6:
-                        if (Num(codes, i, 1, mode1) == 0)
+                        if (num1 == 0)
                         {
-                            i = Num(codes, i, 2, mode2);
+                            i = num2;
                             length = 0;
                         }
                         else
@@ -87,16 +87,12 @@ namespace AdventOfCode
                         break;
 
                     case 7:
-                        bool lessThan = Num(codes, i, 1, mode1) < Num(codes, i, 2, mode2);
-                        codes = Write(codes, lessThan ? 1 : 0, codes[i + 3]);
-
+                        Write(num1 < num2 ? 1 : 0, num3);
                         length = 4;
                         break;
 
                     case 8:
-                        bool equals = Num(codes, i, 1, mode1) == Num(codes, i, 2, mode2);
-                        codes = Write(codes, equals ? 1 : 0, codes[i + 3]);
-
+                        Write(num1 == num2 ? 1 : 0, num3);
                         length = 4;
                         break;
 
@@ -116,27 +112,20 @@ namespace AdventOfCode
             return int.Parse(s[s.Length - 1 - place].ToString());
         }
 
-        int Num(int[] codes, int index, int offset, Mode mode)
+        int Num(int address, Mode mode)
         {
-            return codes[mode == Mode.Position ? codes[index + offset] : index + offset];
+            if (mode == Mode.Position && address >= 0 && address < codes.Length)
+                address = codes[address];
+
+            if (address >= 0 && address < codes.Length)
+                return codes[address];
+            else
+                return 0;
         }
 
-        int[] Add(int[] codes, int num1, int num2, int target)
-        {
-            codes[target] = num1 + num2;
-            return codes;
-        }
-
-        int[] Multiply(int[] codes, int num1, int num2, int target)
-        {
-            codes[target] = num1 * num2;
-            return codes;
-        }
-
-        int[] Write(int[] codes, int num, int target)
+        void Write(int num, int target)
         {
             codes[target] = num;
-            return codes;
         }
     }
 }
