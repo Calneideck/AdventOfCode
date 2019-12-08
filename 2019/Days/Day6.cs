@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
+using System.Collections.Generic;
 
 namespace AdventOfCode
 {
@@ -57,8 +55,8 @@ namespace AdventOfCode
                 san.Add(target);
             }
 
-            List<string> both = me.Intersect(san).ToList();
-            int count = me.FindIndex(s => s == both[0]) + san.FindIndex(s => s == both[0]);
+            string both = me.Intersect(san).ToList()[0];
+            int count = me.IndexOf(both) + san.IndexOf(both);
 
             return count;
         }
