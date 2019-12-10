@@ -48,9 +48,9 @@ namespace AdventOfCode
                     i *= 1;
                 }
 
-                long p1 = codes[i + 1];
-                long p2 = codes[i + 2];
-                long p3 = codes[i + 3];
+                long p1 = GetParam(1, mode1);
+                long p2 = GetParam(2, mode2);
+                long p3 = GetParam(3, mode3);
 
                 long num1 = Num(i + 1, mode1);
                 long num2 = Num(i + 2, mode2);
@@ -58,17 +58,17 @@ namespace AdventOfCode
                 switch (opcode)
                 {
                     case 1:
-                        Write(num1 + num2, (int)p3 + (mode3 == Mode.Relative ? relBase : 0));
+                        Write(num1 + num2, (int)p3);
                         length = 4;
                         break;
 
                     case 2:
-                        Write(num1 * num2, (int)p3 + (mode3 == Mode.Relative ? relBase : 0));
+                        Write(num1 * num2, (int)p3);
                         length = 4;
                         break;
 
                     case 3:
-                        Write(inputs.Dequeue(), (int)p1 + (mode1 == Mode.Relative ? relBase : 0));
+                        Write(inputs.Dequeue(), (int)p1);
                         length = 2;
                         break;
 
@@ -98,12 +98,12 @@ namespace AdventOfCode
                         break;
 
                     case 7:
-                        Write(num1 < num2 ? 1 : 0, (int)p3 + (mode3 == Mode.Relative ? relBase : 0));
+                        Write(num1 < num2 ? 1 : 0, (int)p3);
                         length = 4;
                         break;
 
                     case 8:
-                        Write(num1 == num2 ? 1 : 0, (int)p3 + (mode3 == Mode.Relative ? relBase : 0));
+                        Write(num1 == num2 ? 1 : 0, (int)p3);
                         length = 4;
                         break;
 
@@ -149,6 +149,15 @@ namespace AdventOfCode
                 return codes[address];
             else
                 return 0;
+        }
+
+        long GetParam(int offset, Mode mode)
+        {
+            long value = codes[i + offset];
+            if (mode == Mode.Relative)
+                value += relBase;
+
+            return value;
         }
 
         void Write(long num, int target)

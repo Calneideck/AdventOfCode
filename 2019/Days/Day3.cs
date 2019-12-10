@@ -7,7 +7,7 @@ namespace AdventOfCode
 {
     class Day3 : Day
     {
-        public override int Part1()
+        public override string Part1()
         {
             string[] lines = File.ReadAllLines("Input/3.txt");
             string[] wire1 = lines[0].Split(',');
@@ -17,10 +17,10 @@ namespace AdventOfCode
             var path2 = GetWirePath(wire2);
 
             var intersect = path1.Keys.Intersect(path2.Keys);
-            return intersect.Min(i => Math.Abs(i.x) + Math.Abs(i.y));
+            return intersect.Min(i => Math.Abs(i.x) + Math.Abs(i.y)).ToString();
         }
 
-        public override int Part2()
+        public override string Part2()
         {
             string[] lines = File.ReadAllLines("Input/3.txt");
             string[] wire1 = lines[0].Split(',');
@@ -30,7 +30,7 @@ namespace AdventOfCode
             var path2 = GetWirePath(wire2);
 
             var intersect = path1.Keys.Intersect(path2.Keys).Where(x => x.x != 0 && x.y != 0);
-            return intersect.Min(p => path1[p] + path2[p]);
+            return intersect.Min(p => path1[p] + path2[p]).ToString();
         }
 
         (int x, int y) GetDir(string direction)

@@ -10,16 +10,16 @@ namespace AdventOfCode
 
         private int[] codes;
 
-        public override int Part1()
+        public override string Part1()
         {
             codes = File.ReadAllText("Input/5.txt").Split(',').Select(s => int.Parse(s)).ToArray();
-            return GetCodeResult(codes, 1);
+            return GetCodeResult(codes, 1).ToString();
         }
 
-        public override int Part2()
+        public override string Part2()
         {
             codes = File.ReadAllText("Input/5.txt").Split(',').Select(s => int.Parse(s)).ToArray();
-            return GetCodeResult(codes, 5);
+            return GetCodeResult(codes, 5).ToString();
         }
 
         private int GetCodeResult(int[] codes, int input)

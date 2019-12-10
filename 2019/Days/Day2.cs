@@ -6,14 +6,14 @@ namespace AdventOfCode
 {
     class Day2 : Day
     {
-        public override int Part1()
+        public override string Part1()
         {
             int[] codes = File.ReadAllText("Input/2.txt").Split(',').Select(s => int.Parse(s)).ToArray();
 
-            return GetCodeResult(codes, 12, 2);
+            return GetCodeResult(codes, 12, 2).ToString();
         }
 
-        public override int Part2()
+        public override string Part2()
         {
             var codes = File.ReadAllText("Input/2.txt").Split(',').Select(s => int.Parse(s));
 
@@ -22,10 +22,10 @@ namespace AdventOfCode
                 {
                     int result = GetCodeResult(codes.ToArray(), noun, verb);
                     if (result == 19690720)
-                        return 100 * noun + verb;
+                        return (100 * noun + verb).ToString();
                 }
 
-            return 0;
+            return "";
         }
 
         private int GetCodeResult(int[] codes, int noun, int verb)

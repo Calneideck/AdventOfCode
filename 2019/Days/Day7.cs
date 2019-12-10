@@ -9,7 +9,7 @@ namespace AdventOfCode
 
         private IEnumerable<int> codeList;
 
-        public override int Part1()
+        public override string Part1()
         {
             codeList = File.ReadAllText("Input/7.txt").Split(',').Select(s => int.Parse(s));
             int highestResult = 0;
@@ -47,10 +47,10 @@ namespace AdventOfCode
                 }
             }
 
-            return highestResult;
+            return highestResult.ToString();
         }
 
-        public override int Part2()
+        public override string Part2()
         {
             codeList = File.ReadAllText("Input/7.txt").Split(',').Select(s => int.Parse(s));
             int highestResult = 0;
@@ -100,7 +100,7 @@ namespace AdventOfCode
                 }
             }
 
-            return highestResult;
+            return highestResult.ToString();
         }
     }
 }

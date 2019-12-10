@@ -7,7 +7,7 @@ namespace AdventOfCode
 {
     class Day1 : Day
     {
-        public override int Part1()
+        public override string Part1()
         {
             string[] lines = File.ReadAllLines("Input/1.txt");
             int sum = 0;
@@ -16,10 +16,10 @@ namespace AdventOfCode
             foreach (int num in numbers)
                 sum += (int)Math.Floor(num / 3f) - 2;
 
-            return sum;
+            return sum.ToString();
         }
 
-        public override int Part2()
+        public override string Part2()
         {
             string[] lines = File.ReadAllLines("Input/1.txt");
             int sum = 0;
@@ -37,7 +37,7 @@ namespace AdventOfCode
                 }
             }
 
-            return sum;
+            return sum.ToString();
         }
     }
 }

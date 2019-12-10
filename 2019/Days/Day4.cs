@@ -9,7 +9,7 @@ namespace AdventOfCode
 
         private List<int> passwords = new List<int>();
 
-        public override int Part1()
+        public override string Part1()
         {
             for (int number = min; number <= max; number++)
             {
@@ -41,10 +41,10 @@ namespace AdventOfCode
                     passwords.Add(number);
             }
 
-            return passwords.Count;
+            return passwords.Count.ToString();
         }
 
-        public override int Part2()
+        public override string Part2()
         {
             int count = 0;
 
@@ -69,7 +69,7 @@ namespace AdventOfCode
                     break;
                 }
 
-            return count;
+            return count.ToString();
         }
 
         int PlaceValue(int num, int place)

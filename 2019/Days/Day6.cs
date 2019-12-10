@@ -8,7 +8,7 @@ namespace AdventOfCode
     {
         private Dictionary<string, string> orbits = new Dictionary<string, string>();
 
-        public override int Part1()
+        public override string Part1()
         {
             string[] lines = File.ReadAllLines("Input/6.txt");
 
@@ -33,10 +33,10 @@ namespace AdventOfCode
                 }
             }
 
-            return orbitCount;
+            return orbitCount.ToString();
         }
 
-        public override int Part2()
+        public override string Part2()
         {
             List<string> me = new List<string>();
             List<string> san = new List<string>();
@@ -58,7 +58,7 @@ namespace AdventOfCode
             string both = me.Intersect(san).ToList()[0];
             int count = me.IndexOf(both) + san.IndexOf(both);
 
-            return count;
+            return count.ToString();
         }
     }
 }

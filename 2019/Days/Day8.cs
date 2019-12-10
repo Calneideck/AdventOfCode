@@ -9,7 +9,7 @@ namespace AdventOfCode
     {
         private List<int[]> layers = new List<int[]>();
 
-        public override int Part1()
+        public override string Part1()
         {
             int[] input = File.ReadAllText("Input/8.txt").ToCharArray().Select(c => int.Parse(c.ToString())).ToArray();
 
@@ -21,10 +21,10 @@ namespace AdventOfCode
             }
 
             var min = layers.OrderBy(x => x.Count(y => y == 0)).First();
-            return min.Count(x => x == 1) * min.Count(x => x == 2);
+            return (min.Count(x => x == 1) * min.Count(x => x == 2)).ToString();
         }
 
-        public override int Part2()
+        public override string Part2()
         {
             List<int> image = new List<int>();
 

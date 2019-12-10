@@ -9,7 +9,7 @@ namespace AdventOfCode
     {
         private IEnumerable<long> codeList;
 
-        public override int Part1()
+        public override string Part1()
         {
             codeList = File.ReadAllText("Input/9.txt").Split(',').Select(s => long.Parse(s));
 
@@ -24,10 +24,10 @@ namespace AdventOfCode
                     Console.WriteLine(result);
             }
 
-            return 0;
+            return base.Part1();
         }
 
-        public override int Part2()
+        public override string Part2()
         {
             LCVM vm = new LCVM(codeList.ToArray());
             vm.AddInput(2);
@@ -40,7 +40,7 @@ namespace AdventOfCode
                     Console.WriteLine(result);
             }
 
-            return 0;
+            return base.Part2();
         }
     }
 }
