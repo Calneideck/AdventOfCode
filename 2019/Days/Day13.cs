@@ -54,33 +54,34 @@ namespace AdventOfCode
             {
                 long result = vm.GetCodeResult(out stop);
 
-                if (result >= -1)
-                    results.Add(result);
-                else if (result == -2)
-                {
-                    // Requires input
-
-                    if (!allScreen)
+                if (!stop)
+                    if (result == -2)
                     {
-                        // Get Max X and Y coordinates
-                        allScreen = true;
-                        foreach (var item in screen)
+                        // Requires input
+
+                        if (!allScreen)
                         {
-                            maxX = Math.Max(maxX, item.Key.x);
-                            maxY = Math.Max(maxY, item.Key.y);
+                            // Get Max X and Y coordinates
+                            allScreen = true;
+                            foreach (var item in screen)
+                            {
+                                maxX = Math.Max(maxX, item.Key.x);
+                                maxY = Math.Max(maxY, item.Key.y);
+                            }
+
+                            results.Clear();
                         }
 
-                        results.Clear();
-                    }
+                        if (++count == 50)
+                        {
+                            DrawScreen(screen);
+                            count = 0;
+                        }
 
-                    if (++count == 50)
-                    {
-                        DrawScreen(screen);
-                        count = 0;
+                        vm.AddInput(Math.Sign(ballX - paddleX));
                     }
-
-                    vm.AddInput(Math.Sign(ballX - paddleX));
-                }
+                    else
+                        results.Add(result);
 
                 if (results.Count == 3)
                 {
@@ -107,7 +108,8 @@ namespace AdventOfCode
             }
 
             DrawScreen(screen);
-            return "Final Score: " + score;
+            
+            return "";
         }
 
         void DrawScreen(Dictionary<(int x, int y), int> screen)
@@ -123,7 +125,7 @@ namespace AdventOfCode
 
                     char c = val switch
                     {
-                        1 => '@',
+                        1 => '█',
                         2 => 'X',
                         3 => '-',
                         4 => 'O',
