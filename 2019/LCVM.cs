@@ -43,13 +43,7 @@ namespace AdventOfCode
                 Mode mode2 = (Mode)PlaceValue(instruction, 3);
                 Mode mode3 = (Mode)PlaceValue(instruction, 4);
 
-                if (codes[i] > 9999)
-                {
-                    i *= 1;
-                }
-
                 long p1 = GetParam(1, mode1);
-                long p2 = GetParam(2, mode2);
                 long p3 = GetParam(3, mode3);
 
                 long num1 = Num(i + 1, mode1);
@@ -68,6 +62,12 @@ namespace AdventOfCode
                         break;
 
                     case 3:
+                        if (inputs.Count == 0)
+                        {
+                            stop = false;
+                            return -2;
+                        }
+
                         Write(inputs.Dequeue(), (int)p1);
                         length = 2;
                         break;
