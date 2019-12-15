@@ -44,28 +44,35 @@ namespace AdventOfCode
                 {
                     var pathToStart = new List<Node>();
                     var n = currentNode;
-                    while (n.pos != (0, 0))
+                    while (n.pos != (0, 0) && n.pos != pos)
                     {
                         pathToStart.Add(n);
                         n = n.parent;
                     }
+
                     pathToStart.Reverse();
 
                     var dronePathToStart = new Queue<Node>();
-                    n = nodes.Find(n => n.pos == pos);
-                    while (n.pos != (0, 0))
+                    if (n.pos != pos)
                     {
-                        n = n.parent;
-                        dronePathToStart.Enqueue(n);
+                        n = nodes.Find(n => n.pos == pos);
+                        while (n.pos != (0, 0))
+                        {
+                            n = n.parent;
+                            dronePathToStart.Enqueue(n);
+                        }
                     }
 
-                    foreach (var node in pathToStart)
-                        dronePathToStart.Enqueue(node);
+                    foreach (var nextNode in pathToStart)
+                        dronePathToStart.Enqueue(nextNode);
 
                     while (pos != currentNode.pos)
                     {
                         var nextNode = dronePathToStart.Dequeue();
                         var directionToTake = (nextNode.pos.x - pos.x, nextNode.pos.y - pos.y);
+                        if (directionToTake.Item1 == 0 && directionToTake.Item2 == 0)
+                            continue;
+
                         var dir = GetDirCode(directionToTake);
                         vm.AddInput(dir);
                         vm.GetCodeResult();
@@ -96,18 +103,7 @@ namespace AdventOfCode
                         nodes.Add(newNode);
 
                         if (output == 2)
-                        {
                             oxygenSystemNode = newNode;
-                            var pathToStart = new Queue<Node>();
-                            Node n = newNode;
-                            while (n.pos != (0, 0))
-                            {
-                                n = n.parent;
-                                pathToStart.Enqueue(n);
-                            }
-
-                            pathToOxygenLength = pathToStart.Count;
-                        }
 
                         if (output == 1 || output == 2)
                         {
@@ -120,6 +116,16 @@ namespace AdventOfCode
                     }
                 }
             }
+
+            var pathToOxygen = new Queue<Node>();
+            Node node = oxygenSystemNode;
+            while (node.pos != (0, 0))
+            {
+                node = node.parent;
+                pathToOxygen.Enqueue(node);
+            }
+
+            pathToOxygenLength = pathToOxygen.Count;
 
             DrawArea(currentNode.pos);
             return pathToOxygenLength.ToString();
@@ -157,7 +163,7 @@ namespace AdventOfCode
 
                 openList.AddRange(toAdd);
                 toAdd.Clear();
-                
+
                 ++time;
             }
 
@@ -170,7 +176,7 @@ namespace AdventOfCode
             int maxX = nodes.Max(n => n.pos.x);
             int minY = nodes.Min(n => n.pos.y);
             int maxY = nodes.Max(n => n.pos.y);
-            Console.Clear();
+            Console.WriteLine();
 
             for (int y = maxY; y >= minY; y--)
             {
@@ -191,6 +197,8 @@ namespace AdventOfCode
 
                     if (x == pos.x && y == pos.y)
                         c = 'X';
+                    else if (x == 0 && y == 0)
+                        c = 'S';
 
                     Console.Write(c);
                 }
