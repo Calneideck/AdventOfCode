@@ -30,7 +30,7 @@ namespace AdventOfCode
             for (int y = maxY; y >= minY; y--)
             {
                 for (int x = minX; x < maxX; x++)
-                    Console.Write(paint.GetValueOrDefault((x, y)) == 0 ? " " : "X");
+                    Console.Write(paint.GetValueOrDefault((x, y)) == 0 ? " " : "█");
 
                 Console.WriteLine();
             }
@@ -49,36 +49,27 @@ namespace AdventOfCode
             LCVM vm = new LCVM(codeList.ToArray());
             vm.AddInput(input); // First panel is black
 
-            bool stop = false;
-            while (!stop)
-            {
-                long result = vm.GetCodeResult(out stop);
-                if (result >= 0)
-                {
-                    // Colour
-                    if (paint.ContainsKey(pos))
-                        paint[pos] = (int)result;
-                    else
-                        paint.Add(pos, (int)result);
-                }
-                else
-                    Console.WriteLine(result);
+            var result = LCVM.StopCode.None;
+            bool isColour = true;
 
-                if (!stop)
+            while (result != LCVM.StopCode.Halt)
+            {
+                result = vm.GetCodeResult();
+                if (result == LCVM.StopCode.Output)
                 {
-                    result = vm.GetCodeResult(out stop);
-                    if (result >= 0)
+                    if (isColour)
+                        paint[pos] = (int)vm.GetOutput();
+                    else
                     {
                         // Dir
-                        face += (int)result * 2 - 1;
+                        face += (int)vm.GetOutput() * 2 - 1;
                         var dir = GetDirection(face);
                         pos = (pos.x + dir.x, pos.y + dir.y);
                     }
-                    else
-                        Console.WriteLine(result);
-                }
 
-                if (!stop)
+                    isColour = !isColour;
+                }
+                else if (result == LCVM.StopCode.Input)
                 {
                     paint.TryGetValue(pos, out int panel);
                     vm.AddInput(panel);

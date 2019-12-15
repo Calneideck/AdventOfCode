@@ -8,15 +8,19 @@ namespace AdventOfCode
     {
         private enum Mode { Position, Immediate, Relative };
 
+        public enum StopCode { None, Input, Output, Halt }
+
         private List<long> codes;
         private int i;
         private Queue<long> inputs;
+        private Queue<long> outputs;
         private int relBase;
 
         public LCVM(long[] codes)
         {
             this.codes = codes.ToList();
             inputs = new Queue<long>();
+            outputs = new Queue<long>();
         }
 
         public void AddInput(int input)
@@ -30,7 +34,12 @@ namespace AdventOfCode
                 this.inputs.Enqueue(item);
         }
 
-        public long GetCodeResult(out bool stop)
+        public long GetOutput()
+        {
+            return outputs.Dequeue();
+        }
+
+        public StopCode GetCodeResult()
         {
             int length;
 
@@ -63,19 +72,16 @@ namespace AdventOfCode
 
                     case 3:
                         if (inputs.Count == 0)
-                        {
-                            stop = false;
-                            return -2;
-                        }
+                            return StopCode.Input;
 
                         Write(inputs.Dequeue(), (int)p1);
                         length = 2;
                         break;
 
                     case 4:
-                        stop = false;
                         i += 2;
-                        return num1;
+                        outputs.Enqueue(num1);
+                        return StopCode.Output;
 
                     case 5:
                         if (num1 != 0)
@@ -113,10 +119,7 @@ namespace AdventOfCode
                         break;
 
                     case 99:
-                        {
-                            stop = true;
-                            return -1;
-                        }
+                        return StopCode.Halt;
 
                     default:
                         throw new Exception("Error! Code: " + i);
@@ -144,7 +147,7 @@ namespace AdventOfCode
 
             if (mode == Mode.Relative)
                 address += relBase;
-            
+
             if (address >= 0 && address < codes.Count)
                 return codes[address];
             else

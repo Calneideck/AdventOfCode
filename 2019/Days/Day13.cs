@@ -18,70 +18,68 @@ namespace AdventOfCode
 
             List<long> results = new List<long>();
 
-            bool stop = false;
-            while (!stop)
+            var result = LCVM.StopCode.None;
+            while (result != LCVM.StopCode.Halt)
             {
-                long result = vm.GetCodeResult(out stop);
-                if (result >= 0)
-                    results.Add(result);
+                result = vm.GetCodeResult();
+                if (result == LCVM.StopCode.Output)
+                    results.Add(vm.GetOutput());
             }
 
             int blocks = 0;
             for (int i = 2; i < results.Count; i += 3)
-            {
                 if (results[i] == 2)
                     blocks++;
-            }
 
             return blocks.ToString();
         }
 
         public override string Part2()
         {
+            Console.WriteLine("Press a key to start Part 2:");
+            Console.ReadKey();
+            
             var codes = codeList.ToArray();
             codes[0] = 2;
             LCVM vm = new LCVM(codes);
 
             List<long> results = new List<long>();
             Dictionary<(int x, int y), int> screen = new Dictionary<(int x, int y), int>();
+
             bool allScreen = false;
             int ballX = 0;
             int paddleX = 0;
             int count = 0;
 
-            bool stop = false;
-            while (!stop)
+            var result = LCVM.StopCode.None;
+            while (result != LCVM.StopCode.Halt)
             {
-                long result = vm.GetCodeResult(out stop);
+                result = vm.GetCodeResult();
 
-                if (!stop)
-                    if (result == -2)
+                if (result == LCVM.StopCode.Input)
+                {
+                    if (!allScreen)
                     {
-                        // Requires input
-
-                        if (!allScreen)
+                        // Get Max X and Y coordinates
+                        allScreen = true;
+                        foreach (var item in screen)
                         {
-                            // Get Max X and Y coordinates
-                            allScreen = true;
-                            foreach (var item in screen)
-                            {
-                                maxX = Math.Max(maxX, item.Key.x);
-                                maxY = Math.Max(maxY, item.Key.y);
-                            }
-
-                            results.Clear();
+                            maxX = Math.Max(maxX, item.Key.x);
+                            maxY = Math.Max(maxY, item.Key.y);
                         }
-
-                        if (++count == 50)
-                        {
-                            DrawScreen(screen);
-                            count = 0;
-                        }
-
-                        vm.AddInput(Math.Sign(ballX - paddleX));
                     }
-                    else
-                        results.Add(result);
+
+                    if (++count == 50)
+                    {
+                        // Visualisation
+                        DrawScreen(screen);
+                        count = 0;
+                    }
+
+                    vm.AddInput(Math.Sign(ballX - paddleX));
+                }
+                else if (result == LCVM.StopCode.Output)
+                    results.Add(vm.GetOutput());
 
                 if (results.Count == 3)
                 {
@@ -108,7 +106,7 @@ namespace AdventOfCode
             }
 
             DrawScreen(screen);
-            
+
             return "";
         }
 

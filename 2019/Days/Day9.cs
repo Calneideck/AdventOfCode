@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace AdventOfCode
 {
@@ -16,12 +16,12 @@ namespace AdventOfCode
             LCVM vm = new LCVM(codeList.ToArray());
             vm.AddInput(1);
 
-            bool stop = false;
-            while (!stop)
+            LCVM.StopCode result = LCVM.StopCode.None;
+            while (result != LCVM.StopCode.Halt)
             {
-                long result = vm.GetCodeResult(out stop);
-                if (result >= 0)
-                    Console.WriteLine(result);
+                result = vm.GetCodeResult();
+                if (result == LCVM.StopCode.Output)
+                    Console.WriteLine(vm.GetOutput());
             }
 
             return base.Part1();
@@ -32,12 +32,12 @@ namespace AdventOfCode
             LCVM vm = new LCVM(codeList.ToArray());
             vm.AddInput(2);
 
-            bool stop = false;
-            while (!stop)
+            LCVM.StopCode result = LCVM.StopCode.None;
+            while (result != LCVM.StopCode.Halt)
             {
-                long result = vm.GetCodeResult(out stop);
-                if (result >= 0)
-                    Console.WriteLine(result);
+                result = vm.GetCodeResult();
+                if (result == LCVM.StopCode.Output)
+                    Console.WriteLine(vm.GetOutput());
             }
 
             return base.Part2();

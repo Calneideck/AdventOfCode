@@ -59,15 +59,6 @@ namespace AdventOfCode
                     maxFuel = fuel - 1;
             }
 
-            var nums = new int[] { 1, 3, 4, 5, 6, 8, 9, 10 };
-            int min = 0;
-            int max = nums.Length - 1;
-
-            while (min < max)
-            {
-                int i = (min + max + 1) / 2;
-            }
-
             return minFuel.ToString();
         }
 
