@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace AdventOfCode
 {
@@ -6,11 +7,14 @@ namespace AdventOfCode
     {
         static void Main()
         {
-            Day today = new Day15();
+            Day today = new Day16();
 
             Console.WriteLine(today.GetType().ToString());
             Console.WriteLine("---------------------");
             Console.WriteLine();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
 
             Console.Write("Part 1: ");
             Console.WriteLine(today.Part1());
@@ -19,8 +23,8 @@ namespace AdventOfCode
             Console.Write("Part 2: ");
             Console.WriteLine(today.Part2());
 
-            Console.WriteLine();
-            Console.ReadKey();
+            sw.Stop();
+            Console.WriteLine("\nTime (ms): " + sw.ElapsedMilliseconds);
         }
     }
 }
