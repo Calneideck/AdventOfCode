@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Linq;
+using System.Numerics;
+using System.Collections.Generic;
 
 namespace AdventOfCode
 {
@@ -32,23 +31,52 @@ namespace AdventOfCode
 
         public override string Part2()
         {
+            /*
+             * Couldn't complete part 2. Code taken from here:
+             * https://github.com/mcpower/adventofcode/blob/master/2019/22/a-improved.py
+             */
+
             var input = File.ReadAllLines("Input/22.txt").Select(s => s.Split(' '));
 
-            List<long> deck = new List<long>();
-            for (long i = 0; i < 5000; i++)
-                deck.Add(i);
+            BigInteger cards = 119315717514047;
+            BigInteger interations = 101741582076661;
+
+            BigInteger increment_mul = 1;
+            BigInteger offset_diff = 0;
 
             foreach (var line in input)
             {
                 if (line[0] == "cut")
-                    deck = CutDeck(deck, long.Parse(line[1]));
+                {
+                    offset_diff += int.Parse(line[1]) * increment_mul;
+                    offset_diff %= cards;
+                }
                 else if (line[2] == "increment")
-                    deck = DealIncrement(deck, long.Parse(line[3]));
+                {
+                    int diff = int.Parse(line[3]);
+                    increment_mul *= Inverse(diff, cards);
+                    increment_mul %= cards;
+                }
                 else if (line[2] == "new")
-                    deck.Reverse();
+                {
+                    increment_mul *= -1;
+                    increment_mul %= cards;
+
+                    offset_diff += increment_mul;
+                    offset_diff %= cards;
+                }
             }
 
-            return deck[2020].ToString();
+            BigInteger increment = BigInteger.ModPow(increment_mul, interations, cards);
+            BigInteger offset = offset_diff * (1 - increment) * Inverse((1 - increment_mul) % cards, cards);
+            offset %= cards;
+
+            return ((offset + 2020 * increment) % cards).ToString();
+        }
+
+        BigInteger Inverse(BigInteger n, BigInteger cards)
+        {
+            return BigInteger.ModPow(n, cards - 2, cards);
         }
 
         List<long> CutDeck(List<long> deck, long count)
