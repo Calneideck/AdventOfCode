@@ -23,12 +23,12 @@ namespace AdventOfCode
             outputs = new Queue<long>();
         }
 
-        public void AddInput(int input)
+        public void AddInput(long input)
         {
             inputs.Enqueue(input);
         }
 
-        public void AddInputs(IEnumerable<int> inputs)
+        public void AddInputs(IEnumerable<long> inputs)
         {
             foreach (var item in inputs)
                 this.inputs.Enqueue(item);
@@ -37,6 +37,11 @@ namespace AdventOfCode
         public long GetOutput()
         {
             return outputs.Dequeue();
+        }
+
+        public bool HasOutput()
+        {
+            return outputs.Any();
         }
 
         public StopCode GetCodeResult()
