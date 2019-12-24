@@ -18,32 +18,30 @@ namespace AdventOfCode
 
         struct State
         {
-            public V2 pos;
+            public V2[] positions;
             public char[] keys;
 
-            public State(V2 pos, char[] keys)
+            public State(V2[] positions, char[] keys)
             {
-                this.pos = pos;
+                this.positions = positions;
                 this.keys = keys;
             }
 
             public override bool Equals(object obj)
             {
                 var other = (State)obj;
-                return pos == other.pos && keys.SequenceEqual(other.keys);
+                return positions.SequenceEqual(other.positions) && keys.SequenceEqual(other.keys);
             }
         }
 
         private List<Node> nodes = new List<Node>();
         private List<Node> keyNodes = new List<Node>();
         private List<char> allKeys = new List<char>();
-        private Dictionary<(V2 start, V2 end), (int steps, char[] reqKeys, char[] passesKeys)> paths = new Dictionary<(V2 start, V2 end), (int steps, char[] reqKeys, char[] passesKeys)>();
+        private Dictionary<(int robot, V2 start, V2 end), (int steps, char[] reqKeys, char[] passesKeys)> paths = new Dictionary<(int robot, V2 start, V2 end), (int steps, char[] reqKeys, char[] passesKeys)>();
         private Dictionary<State, int> seenPaths = new Dictionary<State, int>();
 
         public override string Part1()
         {
-            return "X";
-            
             var input = File.ReadAllLines("Input/18.txt");
             Node startNode = null;
             int y = 0;
@@ -81,10 +79,10 @@ namespace AdventOfCode
             Console.WriteLine();
 
             keyNodes = nodes.Where(n => n.isKey).ToList();
-            FindPaths(startNode);
+            FindPaths(0, startNode);
             Console.WriteLine("Paths found.");
 
-            int steps = ProcessPath(startNode.pos, new char[0], 0);
+            int steps = ProcessPathSingle(startNode.pos, new char[0], 0);
 
             return steps.ToString();
         }
@@ -132,41 +130,77 @@ namespace AdventOfCode
             Console.WriteLine();
 
             keyNodes = nodes.Where(n => n.isKey).ToList();
-            foreach (var robotNode in robots)
-                FindPaths(robotNode);
+            for (int i = 0; i < robots.Count; i++)
+                FindPaths(i, robots[i]);
 
             Console.WriteLine("Paths found.");
 
-            int steps = ProcessPath(robots[0].pos, new char[0], 0);
+            int steps = ProcessPath(robots.Select(r => r.pos).ToArray(), new char[0], 0);
 
             return steps.ToString();
         }
 
 
-
-        int ProcessPath(V2 pos, char[] keys, int steps)
+        int ProcessPathSingle(V2 pos, char[] keys, int steps)
         {
-            var remainingKeyNodes = GetReachableKeys(pos, keys);
+            var remainingKeyNodes = GetReachableKeys(0, pos, keys);
             if (remainingKeyNodes.Any())
             {
-                if (seenPaths.TryGetValue(new State(pos, keys), out int pathSteps))
-                    return steps + pathSteps;
+                var state = new State(new V2[] { pos }, keys);
+                if (seenPaths.TryGetValue(state, out int newSteps))
+                {
+                }
                 else
                 {
-                    int newSteps = remainingKeyNodes.Min(keyNode => ProcessPath(keyNode.pos, keys.Append(keyNode.tile).OrderBy(c => c).ToArray(), paths[(pos, keyNode.pos)].steps));
-                    seenPaths.Add(new State(pos, keys), newSteps);
-                    return steps + newSteps;
+                    newSteps = remainingKeyNodes.Min(keyNode => ProcessPathSingle(keyNode.pos, keys.Append(keyNode.tile).OrderBy(c => c).ToArray(), paths[(0, pos, keyNode.pos)].steps));
+                    seenPaths.Add(state, newSteps);
                 }
+
+                return steps + newSteps;
             }
-            else
-                return steps;
+
+            return steps;
         }
 
-        void FindPaths(Node startNode)
+        int ProcessPath(V2[] positions, char[] keys, int steps)
+        {
+            int bestSteps = int.MaxValue;
+            bool found = false;
+
+            for (int i = 0; i < positions.Length; i++)
+            {
+                var remainingKeyNodes = GetReachableKeys(i, positions[i], keys);
+                if (remainingKeyNodes.Any())
+                {
+                    if (seenPaths.TryGetValue(new State(positions, keys), out int newSteps))
+                    { }
+                    else
+                    {
+                        newSteps = remainingKeyNodes.Min(keyNode => ProcessPath(SetPositions(positions, i, keyNode.pos), keys.Append(keyNode.tile).OrderBy(c => c).ToArray(), paths[(i, positions[i], keyNode.pos)].steps));
+                        seenPaths.Add(new State(positions, keys), newSteps);
+                    }
+
+                    if (newSteps < bestSteps)
+                        bestSteps = newSteps;
+
+                    found = true;
+                }
+            }
+
+            return steps + (found ? bestSteps : 0);
+        }
+
+        V2[] SetPositions(V2[] array, int index, V2 value)
+        {
+            V2[] newArray = (V2[])array.Clone();
+            newArray[index] = value;
+            return newArray;
+        }
+
+        void FindPaths(int robot, Node startNode)
         {
             HashSet<char> doneKeys = new HashSet<char>();
             var dirs = V2.Directions;
-            paths.Clear();
 
             keyNodes.Insert(0, startNode);
 
@@ -200,8 +234,8 @@ namespace AdventOfCode
                                 int steps = nextNode.path.Count;
                                 char[] reqKeys = nextNode.path.Where(n => n.isDoor).Select(n => n.tile.ToString().ToLower()[0]).ToArray();
                                 char[] passesKeys = nextNode.path.Where(node => node.isKey && n != node).Select(node => node.tile).ToArray();
-                                paths.Add((n.pos, nextNode.pos), (steps, reqKeys, passesKeys));
-                                paths.Add((nextNode.pos, n.pos), (steps, reqKeys, passesKeys));
+                                paths.Add((robot, n.pos, nextNode.pos), (steps, reqKeys, passesKeys));
+                                paths.Add((robot, nextNode.pos, n.pos), (steps, reqKeys, passesKeys));
                             }
 
                             open.Enqueue(nextNode);
@@ -213,7 +247,7 @@ namespace AdventOfCode
             keyNodes.RemoveAt(0);
         }
 
-        List<Node> GetReachableKeys(V2 pos, char[] keys)
+        List<Node> GetReachableKeys(int robot, V2 pos, char[] keys)
         {
             List<Node> reachableKeys = new List<Node>();
 
@@ -222,7 +256,9 @@ namespace AdventOfCode
                 if (n.pos == pos || keys.Contains(n.tile))
                     continue;
 
-                var path = paths[(pos, n.pos)];
+                if (!paths.TryGetValue((robot, pos, n.pos), out var path))
+                    continue;
+
                 if (path.passesKeys.Except(keys).Any())
                     continue;
 
