@@ -37,6 +37,15 @@
             };
         }
 
+        public static V2 operator -(V2 a, V2 b)
+        {
+            return new V2()
+            {
+                x = a.x - b.x,
+                y = a.y - b.y
+            };
+        }
+
         public static bool operator ==(V2 a, V2 b)
         {
             return a.x == b.x && a.y == b.y;

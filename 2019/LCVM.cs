@@ -44,6 +44,15 @@ namespace AdventOfCode
             return outputs.Any();
         }
 
+        public string GetTextOutput()
+        {
+            string text = "";
+            while (HasOutput())
+                text += (char)outputs.Dequeue();
+
+            return text;
+        }
+
         public StopCode GetCodeResult()
         {
             int length;
