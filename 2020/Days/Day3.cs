@@ -10,7 +10,7 @@ namespace AdventOfCode
         string[] lines = File.ReadAllLines("Input/3.txt");
         Dictionary<V2, bool> map = new Dictionary<V2, bool>();
 
-        public override string Part1()
+        public override object Part1()
         {
             int len = lines[0].Length;
             for (int y = 0; y < lines.Length; y++)
@@ -51,7 +51,7 @@ namespace AdventOfCode
             return trees;
         }
 
-        public override string Part2()
+        public override object Part2()
         {
             return (getSlope(new V2(1, 1)) *
              getSlope(new V2(3, 1)) *

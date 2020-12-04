@@ -2,12 +2,12 @@
 {
     public class Day
     {
-        public virtual string Part1()
+        public virtual object Part1()
         {
             return "";
         }
 
-        public virtual string Part2()
+        public virtual object Part2()
         {
             return "";
         }

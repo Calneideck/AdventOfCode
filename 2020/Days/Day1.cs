@@ -9,7 +9,7 @@ namespace AdventOfCode
     {
         string[] lines = File.ReadAllLines("Input/1.txt");
 
-        public override string Part1()
+        public override object Part1()
         {
             IEnumerable<int> numbers = lines.Select(line => int.Parse(line));
             foreach (int num in numbers)
@@ -20,7 +20,7 @@ namespace AdventOfCode
             return "";
         }
 
-        public override string Part2()
+        public override object Part2()
         {
             IEnumerable<int> numbers = lines.Select(line => int.Parse(line));
             foreach (int num in numbers)

@@ -9,7 +9,7 @@ namespace AdventOfCode
     {
         string[] lines = File.ReadAllLines("Input/2.txt");
 
-        public override string Part1()
+        public override object Part1()
         {
             int sum = 0;
             foreach (string line in lines)
@@ -35,7 +35,7 @@ namespace AdventOfCode
             return sum.ToString();
         }
 
-        public override string Part2()
+        public override object Part2()
         {
             int sum = 0;
             foreach (string line in lines)
