@@ -26,7 +26,19 @@
 
         public static V2 Right => new V2(1, 0);
 
+        public static V2 UpLeft => new V2(-1, -1);
+
+        public static V2 UpRight => new V2(1, -1);
+
+        public static V2 DownLeft => new V2(-1, 1);
+
+        public static V2 DownRight => new V2(1, 1);
+
         public static V2[] Directions => new V2[] { Up, Down, Left, Right };
+
+        public static V2[] Diagonals => new V2[] { UpLeft, UpRight, DownRight, DownLeft };
+
+        public static V2[] AllDirections => new V2[] { Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft };
 
         public static V2 operator +(V2 a, V2 b)
         {
@@ -43,6 +55,15 @@
             {
                 x = a.x - b.x,
                 y = a.y - b.y
+            };
+        }
+
+        public static V2 operator *(V2 a, int scale)
+        {
+            return new V2()
+            {
+                x = a.x * scale,
+                y = a.y * scale
             };
         }
 
