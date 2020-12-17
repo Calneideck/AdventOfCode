@@ -32,37 +32,23 @@ namespace AdventOfCode
 
         public override object Part2()
         {
-            var times = lines[1].Split(',').Select((t) =>
+            var times = lines[1].Split(',').Select((t) => t == "x" ? 1 : ulong.Parse(t)).ToArray();
+
+            ulong t = times[0];
+            ulong sum = t;
+
+            for (uint i = 1; i < times.Length; i++)
             {
-                if (t == "x")
-                    return (ulong)1;
-                else
-                    return ulong.Parse(t);
-            }).ToArray();
+                if (times[i] == 1)
+                    continue;
 
-            ulong t = 0;
+                while ((t + i) % times[i] != 0)
+                    t += sum;
 
-            while (true)
-            {
-                t += times[0];
-                ulong sum = t;
-
-                bool pass = true;
-
-                for (uint i = 1; i < times.Length; i++)
-                {
-                    if (times[i] == 1)
-                        continue;
-
-                    while ((t + i) % times[i] != 0)
-                        t += sum;
-
-                    sum = times.Take((int)(i + 1)).Aggregate((x, y) => x * y);
-                }
-
-                if (pass)
-                    return t;
+                sum = times.Take((int)(i + 1)).Aggregate((x, y) => x * y);
             }
+
+            return t;
         }
     }
 }
