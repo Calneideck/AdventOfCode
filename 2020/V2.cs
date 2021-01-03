@@ -34,7 +34,7 @@
 
         public static V2 DownRight => new V2(1, 1);
 
-        public static V2[] Directions => new V2[] { Up, Down, Left, Right };
+        public static V2[] Directions => new V2[] { Up, Right, Down, Left };
 
         public static V2[] Diagonals => new V2[] { UpLeft, UpRight, DownRight, DownLeft };
 
@@ -70,6 +70,11 @@
         public static bool operator ==(V2 a, V2 b)
         {
             return a.x == b.x && a.y == b.y;
+        }
+
+        public override string ToString()
+        {
+            return $"{x},{y}";
         }
     }
 }
