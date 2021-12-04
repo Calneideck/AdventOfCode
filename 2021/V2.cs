@@ -72,9 +72,20 @@
             return a.x == b.x && a.y == b.y;
         }
 
+        
         public override string ToString()
         {
             return $"{x},{y}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return (V2)obj == this;
+        }
+
+        public override int GetHashCode()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
