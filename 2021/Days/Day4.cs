@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using System;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCode
