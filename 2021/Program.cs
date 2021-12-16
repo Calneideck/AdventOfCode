@@ -7,7 +7,7 @@ namespace AdventOfCode
     {
         static void Main()
         {
-            Day today = new Day13();
+            Day today = new Day16();
 
             Console.WriteLine(today.GetType().ToString());
             Console.WriteLine("---------------------");
@@ -21,6 +21,8 @@ namespace AdventOfCode
 
             Console.WriteLine();
             Console.Write("Part 2: ");
+            Console.WriteLine(today.Part2());
+
             sw.Stop();
             Console.WriteLine("\nTime (ms): " + sw.ElapsedMilliseconds);
         }
