@@ -23,7 +23,6 @@ namespace AdventOfCode
                     score += 26;
 
                 count += score;
-
             }
 
             return count;
