@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode
+﻿using System;
+
+namespace AdventOfCode
 {
     struct V2
     {
@@ -9,11 +11,6 @@
         {
             this.x = x;
             this.y = y;
-        }
-
-        public static bool operator !=(V2 a, V2 b)
-        {
-            return !(a == b);
         }
 
         public static V2 Zero => new V2(0, 0);
@@ -42,29 +39,17 @@
 
         public static V2 operator +(V2 a, V2 b)
         {
-            return new V2()
-            {
-                x = a.x + b.x,
-                y = a.y + b.y
-            };
+            return new V2(a.x + b.x, a.y + b.y);
         }
 
         public static V2 operator -(V2 a, V2 b)
         {
-            return new V2()
-            {
-                x = a.x - b.x,
-                y = a.y - b.y
-            };
+            return new V2(a.x - b.x, a.y - b.y);
         }
 
         public static V2 operator *(V2 a, int scale)
         {
-            return new V2()
-            {
-                x = a.x * scale,
-                y = a.y * scale
-            };
+            return new V2(a.x * scale, a.y * scale);
         }
 
         public static bool operator ==(V2 a, V2 b)
@@ -72,7 +57,11 @@
             return a.x == b.x && a.y == b.y;
         }
 
-        
+        public static bool operator !=(V2 a, V2 b)
+        {
+            return !(a == b);
+        }
+
         public override string ToString()
         {
             return $"{x},{y}";
@@ -81,6 +70,11 @@
         public override bool Equals(object obj)
         {
             return (V2)obj == this;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(x, y);
         }
     }
 }
