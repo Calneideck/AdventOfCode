@@ -24,10 +24,10 @@ namespace AdventOfCode
                 for (int x = 0; x < _lines[y].Length; x++)
                 {
                     if (_lines[y][x] != ' ')
-                        map.Add(new V2(x, y), _lines[y][x]);
+                        map.Add(new V2(x + 1, y + 1), _lines[y][x]);
 
                     if (start == V2.Zero && _lines[y][x] == '.')
-                        start = new V2(x, y);
+                        start = new V2(x + 1, y + 1);
                 }
 
             mainStart = start;
@@ -78,28 +78,20 @@ namespace AdventOfCode
                 }
             }
 
-            return 1000 * (start.y + 1) + 4 * (start.x + 1) + dirIndex - 1;
+            return 1000 * start.y + 4 * start.x + ((dirIndex + 3) % 4);
         }
 
         int GetIndex(V2 pos)
         {
-            if (pos.x >= 100)
-                return 5;
-            if (pos.x >= 50)
+            if (pos.x > 100) return 5;
+            else if (pos.x > 50)
             {
-                if (pos.y >= 100)
-                    return 2;
-                else if (pos.y >= 50)
-                    return 3;
+                if (pos.y > 100) return 2;
+                else if (pos.y > 50) return 3;
                 return 4;
             }
-            else
-            {
-                if (pos.y >= 150)
-                    return 0;
-                else
-                    return 1;
-            }
+            else if (pos.y > 150) return 0;
+            else return 1;
         }
 
         V2 GetPosInCube(V2 pos)
@@ -107,18 +99,12 @@ namespace AdventOfCode
             int index = GetIndex(pos);
             switch (index)
             {
-                case 0:
-                    return pos - new V2(0, 150);
-                case 1:
-                    return pos - new V2(0, 100);
-                case 2:
-                    return pos - new V2(50, 100);
-                case 3:
-                    return pos - new V2(50, 50);
-                case 4:
-                    return pos - new V2(50, 0);
-                case 5:
-                    return pos - new V2(100, 0);
+                case 0: return pos - new V2(0, 150);
+                case 1: return pos - new V2(0, 100);
+                case 2: return pos - new V2(50, 100);
+                case 3: return pos - new V2(50, 50);
+                case 4: return pos - new V2(50, 0);
+                case 5: return pos - new V2(100, 0);
             }
             return V2.Zero;
         }
@@ -127,52 +113,46 @@ namespace AdventOfCode
         {
             switch (index)
             {
-                case 0:
-                    return posInCube + new V2(0, 150);
-                case 1:
-                    return posInCube + new V2(0, 100);
-                case 2:
-                    return posInCube + new V2(50, 100);
-                case 3:
-                    return posInCube + new V2(50, 50);
-                case 4:
-                    return posInCube + new V2(50, 0);
-                case 5:
-                    return posInCube + new V2(100, 0);
+                case 0: return posInCube + new V2(0, 150);
+                case 1: return posInCube + new V2(0, 100);
+                case 2: return posInCube + new V2(50, 100);
+                case 3: return posInCube + new V2(50, 50);
+                case 4: return posInCube + new V2(50, 0);
+                case 5: return posInCube + new V2(100, 0);
             }
             return V2.Zero;
         }
 
         Dictionary<(int, int), (int, int, Func<V2, V2>)> transforms = new() {
-            { (0, 0), (1, 0, (p) => new V2(p.x, 49)) },
-            { (0, 1), (2, 0, (p) => new V2(p.y, 49)) },
-            { (0, 2), (5, 2, (p) => new V2(p.x, 0)) },
-            { (0, 3), (4, 2, (p) => new V2(p.y, 0)) },
+            { (0, 0), (1, 0, (p) => new V2(p.x, 50)) },
+            { (0, 1), (2, 0, (p) => new V2(p.y, 50)) },
+            { (0, 2), (5, 2, (p) => new V2(p.x, 1)) },
+            { (0, 3), (4, 2, (p) => new V2(p.y, 1)) },
 
-            { (1, 0), (3, 1, (p) => new V2(0, p.x)) },
-            { (1, 1), (2, 1, (p) => new V2(0, p.y)) },
-            { (1, 2), (0, 2, (p) => new V2(p.x, 0)) },
-            { (1, 3), (4, 1, (p) => new V2(0, 49 - p.y)) },
+            { (1, 0), (3, 1, (p) => new V2(1, p.x)) },
+            { (1, 1), (2, 1, (p) => new V2(1, p.y)) },
+            { (1, 2), (0, 2, (p) => new V2(p.x, 1)) },
+            { (1, 3), (4, 1, (p) => new V2(1, 51 - p.y)) },
 
-            { (2, 0), (3, 0, (p) => new V2(p.x, 49)) },
-            { (2, 1), (5, 3, (p) => new V2(49, 49 - p.y)) },
-            { (2, 2), (0, 3, (p) => new V2(49, p.x)) },
-            { (2, 3), (1, 3, (p) => new V2(49, p.y)) },
+            { (2, 0), (3, 0, (p) => new V2(p.x, 50)) },
+            { (2, 1), (5, 3, (p) => new V2(50, 51 - p.y)) },
+            { (2, 2), (0, 3, (p) => new V2(50, p.x)) },
+            { (2, 3), (1, 3, (p) => new V2(50, p.y)) },
             
-            { (3, 0), (4, 0, (p) => new V2(p.x, 49)) },
-            { (3, 1), (5, 0, (p) => new V2(p.y, 49)) },
-            { (3, 2), (2, 2, (p) => new V2(p.x, 0)) },
-            { (3, 3), (1, 2, (p) => new V2(p.y, 0)) },
+            { (3, 0), (4, 0, (p) => new V2(p.x, 50)) },
+            { (3, 1), (5, 0, (p) => new V2(p.y, 50)) },
+            { (3, 2), (2, 2, (p) => new V2(p.x, 1)) },
+            { (3, 3), (1, 2, (p) => new V2(p.y, 1)) },
 
-            { (4, 0), (0, 1, (p) => new V2(0, p.x)) },
-            { (4, 1), (5, 1, (p) => new V2(0, p.y)) },
-            { (4, 2), (3, 2, (p) => new V2(p.x, 0)) },
-            { (4, 3), (1, 1, (p) => new V2(0, 49 - p.y)) },
+            { (4, 0), (0, 1, (p) => new V2(1, p.x)) },
+            { (4, 1), (5, 1, (p) => new V2(1, p.y)) },
+            { (4, 2), (3, 2, (p) => new V2(p.x, 1)) },
+            { (4, 3), (1, 1, (p) => new V2(1, 51 - p.y)) },
 
-            { (5, 0), (0, 0, (p) => new V2(p.x, 0)) },
-            { (5, 1), (2, 3, (p) => new V2(49, 49 - p.y)) },
-            { (5, 2), (3, 3, (p) => new V2(49, p.x)) },
-            { (5, 3), (4, 3, (p) => new V2(49, p.y)) },
+            { (5, 0), (0, 0, (p) => new V2(p.x, 50)) },
+            { (5, 1), (2, 3, (p) => new V2(50, 51 - p.y)) },
+            { (5, 2), (3, 3, (p) => new V2(50, p.x)) },
+            { (5, 3), (4, 3, (p) => new V2(50, p.y)) },
         };
 
         public override object Part2()
@@ -223,7 +203,7 @@ namespace AdventOfCode
                 }
             }
 
-            return 1000 * (start.y + 1) + 4 * (start.x + 1) + dirIndex - 1;
+            return 1000 * start.y + 4 * start.x + ((dirIndex + 3) % 4);
         }
     }
 }
