@@ -13,6 +13,8 @@ namespace AdventOfCode
             this.y = y;
         }
 
+        public int Cost => Math.Abs(x) + Math.Abs(y);
+
         public static V2 Zero => new V2(0, 0);
 
         public static V2 Up => new V2(0, -1);
