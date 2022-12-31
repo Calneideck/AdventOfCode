@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -10,6 +11,37 @@ namespace AdventOfCode
         List<(V2, V2)> blizzards = new();
         Dictionary<int, List<V2>> blizzMap = new();
         int first;
+
+        class State : IComparable<State>
+        {
+            public V2 pos;
+            public int time;
+
+            public int cost;
+
+            public State(V2 pos, int time, V2 endPos)
+            {
+                this.pos = pos;
+                this.time = time;
+
+                cost = (endPos - pos).Cost + time;
+            }
+
+            public int CompareTo(State other)
+            {
+                return cost.CompareTo(other.cost);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is State state && state.pos == pos && state.time == time;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(pos.x, pos.y, time);
+            }
+        }
 
         List<V2> GenerateBlizzards(int time)
         {
@@ -42,14 +74,14 @@ namespace AdventOfCode
 
         int FindPath(V2 startPos, V2 endPos, int offset)
         {
-            HashSet<(V2, int)> closed = new();
-            Queue<(V2 pos, int time)> open = new();
+            HashSet<State> closed = new();
+            BTSortedList<State> open = new();
 
-            open.Enqueue((startPos, 0));
+            open.Add(new State(startPos, 0, endPos));
 
             while (open.Any())
             {
-                var state = open.Dequeue();
+                State state = open.RemoveFirst();
                 closed.Add(state);
                 state.time++;
 
@@ -73,11 +105,12 @@ namespace AdventOfCode
                 foreach (V2 dir in validDirs)
                 {
                     V2 newPos = state.pos + dir;
-                    if (!closed.Contains((newPos, state.time)) && !open.Contains((newPos, state.time)))
+                    State newState = new State(newPos, state.time, endPos);
+                    if (!closed.Contains(newState) && !open.Contains(newState))
                         if (newPos == endPos)
                             return state.time;
                         else
-                            open.Enqueue((newPos, state.time));
+                            open.Add(newState);
                 }
             }
 
