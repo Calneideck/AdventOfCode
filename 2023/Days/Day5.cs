@@ -53,7 +53,7 @@ namespace AdventOfCode
                 });
             }
 
-            Task.WaitAll([.. tasks]);
+            Task.WaitAll(tasks.ToArray());
 
             return bag.Min();
         }
