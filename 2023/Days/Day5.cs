@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System;
-using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
 namespace AdventOfCode
