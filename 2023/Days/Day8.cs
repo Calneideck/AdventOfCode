@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -38,22 +37,7 @@ namespace AdventOfCode
 
             long[] counts = starts.Select(node => new Path(node, line, map).FindZ()).ToArray();
 
-            return LCM(counts);
-        }
-
-        static long LCM(long[] numbers)
-        {
-            return numbers.Aggregate(lcm);
-        }
-
-        static long lcm(long a, long b)
-        {
-            return Math.Abs(a * b) / GCD(a, b);
-        }
-
-        static long GCD(long a, long b)
-        {
-            return b == 0 ? a : GCD(b, a % b);
+            return MyExtensions.LCM(counts);
         }
 
         class Path
