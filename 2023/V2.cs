@@ -2,7 +2,7 @@
 
 namespace AdventOfCode
 {
-    struct V2
+    public struct V2
     {
         public int x;
         public int y;
