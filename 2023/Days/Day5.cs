@@ -17,7 +17,6 @@ namespace AdventOfCode
         public override object Part1()
         {
             foreach (var line in lines)
-            {
                 if (line.StartsWith("seeds"))
                 {
                     seeds = new Regex(@"(\d+)")
@@ -34,7 +33,6 @@ namespace AdventOfCode
                         .ToArray();
                     map.Last().Add(new long[] { nums[0], nums[1], nums[2] });
                 }
-            }
 
             return seeds.Min((seed) => FindMin(seed, 1));
         }
@@ -56,6 +54,7 @@ namespace AdventOfCode
             Task.WaitAll(tasks.ToArray());
 
             return bag.Min();
+            //6472061
         }
 
         long FindMin(long start, long length)
@@ -63,11 +62,11 @@ namespace AdventOfCode
             long min = long.MaxValue;
             long end = start + length;
 
+            int mapLen = map.Count;
             for (long x = start; x < end; x++)
             {
                 long seed = x;
 
-                int mapLen = map.Count;
                 for (int i = 0; i < mapLen; i++)
                 {
                     int map2Len = map[i].Count;
