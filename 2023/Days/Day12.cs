@@ -11,19 +11,24 @@ namespace AdventOfCode
     {
         string[] lines = File.ReadAllLines("Input/12.txt");
         long unique = 0;
+        Regex hashes = new(@"#+");
+        List<long> uniqueCounts = new();
 
         public override object Part1()
         {
             foreach (string line in lines)
             {
+                unique = 0;
                 string[] parts = line.Split(' ');
                 string spring = parts[0];
                 int[] seq = parts[1].Split(',').Select(int.Parse).ToArray();
 
-                Solve(line, seq);
+                Solve(spring, seq);
+
+                uniqueCounts.Add(unique);
             }
 
-            return unique;
+            return uniqueCounts.Sum();
         }
 
         void Solve(string s, int[] match)
@@ -36,10 +41,11 @@ namespace AdventOfCode
                     return;
                 }
 
-            var matches = new Regex(@"#+").Matches(s);
-            if (matches.Count != match.Length) return;
+            var matches = hashes.Matches(s);
+            int len = match.Length;
+            if (matches.Count != len) return;
 
-            for (int i = 0; i < match.Length; i++)
+            for (int i = 0; i < len; i++)
                 if (matches[i].Value.Length != match[i])
                     return;
 
@@ -48,10 +54,32 @@ namespace AdventOfCode
 
         public override object Part2()
         {
-            long count = 0;
+            long part2 = 0;
+            
+            List<long> unique2 = new();
 
-            return count;
+            int c = 0;
+
+            foreach (string line in lines)
+            {
+                unique = 0;
+                string[] parts = line.Split(' ');
+                string spring = parts[0] + "?" + parts[0];
+                int[] seq = (parts[1] + "," + parts[1]).Split(',').Select(int.Parse).ToArray();
+
+                Solve(spring, seq);
+
+                unique2.Add(unique);
+
+                Console.WriteLine(++c);
+            }
+
+            for (int i = 0; i < lines.Length; i++) {
+                long factor = unique2[i] / uniqueCounts[i];
+                part2 += uniqueCounts[i] * (long)Math.Pow(factor, 4);
+            }
+
+            return part2;
         }
-
     }
 }
