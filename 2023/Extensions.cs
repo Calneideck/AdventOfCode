@@ -42,6 +42,17 @@ namespace AdventOfCode
             return map;
         }
 
+        public static void Draw(string[] lines, Func<V2, bool> fn)
+        {
+            for (int y = 0; y < lines.Length; y++)
+            {
+                Console.WriteLine();
+                for (int x = 0; x < lines[0].Length; x++)
+                    Console.Write(fn(new V2(x, y)) ? '#' : '.');
+            }
+            Console.WriteLine();
+        }
+
         public static long LCM(long[] numbers)
         {
             return numbers.Aggregate(LCM);
