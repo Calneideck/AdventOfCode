@@ -19,7 +19,7 @@ namespace AdventOfCode
 
         public static int[] GrabInts(this string s)
         {
-            return new Regex(@"(\d+)")
+            return new Regex(@"(-?\d+)")
                 .Matches(s).Select(a => int.Parse(a.Value))
                 .ToArray();
         }
@@ -48,6 +48,17 @@ namespace AdventOfCode
             {
                 Console.WriteLine();
                 for (int x = 0; x < lines[0].Length; x++)
+                    Console.Write(fn(new V2(x, y)) ? '#' : '.');
+            }
+            Console.WriteLine();
+        }
+
+        public static void Draw(V2 bounds, Func<V2, bool> fn)
+        {
+            for (int y = 0; y < bounds.y; y++)
+            {
+                Console.WriteLine();
+                for (int x = 0; x < bounds.x; x++)
                     Console.Write(fn(new V2(x, y)) ? '#' : '.');
             }
             Console.WriteLine();
