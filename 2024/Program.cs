@@ -7,13 +7,13 @@ namespace AdventOfCode
     {
         static void Main()
         {
-            Day today = new Day19();
+            Day today = new Day20();
 
             Console.WriteLine(today.GetType().ToString());
             Console.WriteLine("---------------------");
             Console.WriteLine();
 
-            Stopwatch sw = new Stopwatch();
+            Stopwatch sw = new();
             sw.Start();
 
             Console.Write("Part 1: ");
