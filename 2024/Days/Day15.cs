@@ -127,7 +127,7 @@ namespace AdventOfCode
                         };
                         Queue<V2> q = new();
                         q.Enqueue(end);
-                        q.Enqueue(map[end] == '[' ? end + V2.Right : end + V2.Left);
+                        q.Enqueue(boxes[1]);
 
                         for (int z = 0; z < max; z++)
                         {
@@ -171,19 +171,20 @@ namespace AdventOfCode
 
                             if (good)
                             {
-                                for (int x = boxes.Count - 1; x >= 0; x--)
+                                Dictionary<V2, char> oldMap = new(map);
+                                boxes.Reverse();
+
+                                foreach (V2 box in boxes)
                                 {
-                                    map[boxes[x] + dir] = map[boxes[x]];
-                                    map[boxes[x]] = '.';
+                                    map[box + dir] = oldMap[box];
+                                    map[box] = '.';
                                 }
 
                                 robot += dir;
                                 break;
                             }
                             else
-                            {
                                 q = nextQ;
-                            }
                         }
                     }
                 }

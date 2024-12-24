@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace AdventOfCode
 {
-    class Day20 : Day
+    class Day24 : Day
     {
-        string[] lines = File.ReadAllLines("Input/20.txt");
+        string[] lines = File.ReadAllLines("Input/24.txt");
 
         public override object Part1()
         {

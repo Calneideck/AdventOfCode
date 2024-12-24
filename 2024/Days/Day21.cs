@@ -5,14 +5,13 @@ using System.Collections.Generic;
 
 namespace AdventOfCode
 {
-    class Day20 : Day
+    class Day21 : Day
     {
-        string[] lines = File.ReadAllLines("Input/20.txt");
+        string[] lines = File.ReadAllLines("Input/21.txt");
 
         public override object Part1()
         {
-            int sum = 0;
-
+            long sum = 0;
 
             return sum;
         }
